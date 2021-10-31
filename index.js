@@ -24,7 +24,7 @@ let phonebook = [
 ];
 
 const app = express();
-
+app.use(express.static("build"));
 app.use(express.json());
 morgan.token("resBody", (req, res) => {
   return JSON.stringify(req.body);
@@ -84,7 +84,29 @@ app.post("/api/persons", (req, res) => {
   res.json(newPerson);
 });
 
-const PORT = 3001;
+app.put("/api/persons/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const modifiedPerson = req.body;
+  console.log(modifiedPerson);
+  if (!id || !modifiedPerson.name || !modifiedPerson.number) {
+    return res.status(400).end();
+  }
+  const existingPerson = phonebook.find((person) => person.id === id);
+  if (!existingPerson) {
+    return res.status(404).end();
+  }
+  modifiedPerson.id = id;
+  phonebook = phonebook.map((person) => {
+    if (person.id === id) {
+      return modifiedPerson;
+    } else {
+      return person;
+    }
+  });
+  res.json(modifiedPerson);
+});
+
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Listening on http://localhost:${PORT}`);
 });
