@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const mongoose = require("mongoose");
 
 const entrySchema = new mongoose.Schema({
@@ -11,7 +12,7 @@ const logPhonebook = (password) => {
   mongoose.connect(url);
   Person.find({}).then((result) => {
     console.log("phonebook:");
-    for (entry of result) {
+    for (let entry of result) {
       console.log(entry.name, entry.number);
     }
     mongoose.connection.close();

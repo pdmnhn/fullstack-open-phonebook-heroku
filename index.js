@@ -29,6 +29,7 @@ let phonebook = [
 const app = express();
 app.use(express.static("build"));
 app.use(express.json());
+// eslint-disable-next-line no-unused-vars
 morgan.token("resBody", (req, res) => {
   return JSON.stringify(req.body);
 });
@@ -49,7 +50,7 @@ app.get("/info", (req, res) => {
   <p>${Date().toString()}</p>`);
 });
 
-app.get("/api/persons/:id", (req, res, error) => {
+app.get("/api/persons/:id", (req, res, next) => {
   const id = req.params.id;
   Person.findById(id)
     .then((result) => {
@@ -65,7 +66,7 @@ app.get("/api/persons/:id", (req, res, error) => {
 app.delete("/api/persons/:id", (req, res, next) => {
   const id = req.params.id;
   Person.findByIdAndDelete(id)
-    .then((result) => {
+    .then(() => {
       res.status(204).end();
     })
     .catch((error) => next(error));
@@ -122,6 +123,7 @@ const errorHandler = (error, req, res, next) => {
 
 app.use(errorHandler);
 
+// eslint-disable-next-line no-undef
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Listening on http://localhost:${PORT}`);
